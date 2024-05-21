@@ -6,8 +6,7 @@ import requests
 
 st.title("Example Streamlit App :balloon:")
 
-fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
-st.text(fruityvice_response.json())
+
 name_on_order = st.text_input("Movie title")
 st.write("The current movie title is", name_on_order)
 
@@ -16,8 +15,10 @@ cns = st.connection("snowflake")
 session = cns.session()
 
 my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'))
-
+fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
+st.text(fruityvice_response.json())
 data = st.multiselect('data',my_dataframe,max_selections=5)
+fv_df = st.dataframe(data=fruityvice_response.json(),use_container_width=True)
 st.write(data)
 if(data):
     str = ''
