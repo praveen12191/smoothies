@@ -21,7 +21,7 @@ data = st.multiselect('data', [row['FRUIT_NAME'] for row in my_dataframe], max_s
 st.write(data)
 
 if data:
-    str = ' '.join(data)
+    str = ' '
     for i in data:
         st.subheader(i + ' Nutrition Information')
         fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + i)
