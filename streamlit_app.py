@@ -23,6 +23,7 @@ st.write(data)
 if data:
     str = ' '
     for i in data:
+        str+= i + ' '
         st.subheader(i + ' Nutrition Information')
         fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + i)
         st.dataframe(data=fruityvice_response.json(), use_container_width=True)
