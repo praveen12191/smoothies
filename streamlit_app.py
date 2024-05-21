@@ -25,11 +25,8 @@ if data:
     for i in data:
         st.subheader(i + ' Nutrition Information')
         fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + i)
-        if fruityvice_response.status_code == 200:
-            fv_data = fruityvice_response.json()
-            st.dataframe(data=fv_data, use_container_width=True)
-        else:
-            st.write("Error fetching data for " + i)
+        fv_data = fruityvice_response.json()
+        st.dataframe(data=fv_data, use_container_width=True)
     st.write(str)
     insert_query = f"""
     INSERT INTO smoothies.public.orders (INGREDIENTS, NAME_ON_ORDER) 
