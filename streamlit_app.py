@@ -7,7 +7,7 @@ import requests
 st.title("Example Streamlit App :balloon:")
 
 fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
-st.text(fruityvice_response)
+st.text(fruityvice_response.json())
 name_on_order = st.text_input("Movie title")
 st.write("The current movie title is", name_on_order)
 
