@@ -16,7 +16,7 @@ session = cns.session()
 
 my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'))
 
-st.text(fruityvice_response.json())
+
 data = st.multiselect('data',my_dataframe,max_selections=5)
 
 st.write(data)
@@ -25,7 +25,8 @@ if(data):
     for i in data:
 	    str+=i+' '
     fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
-    
+    fv_df = st.dataframe(data=fruityvice_response.json(),use_container_width=True)
+    st.text(fruityvice_response.json())
     st.write(str)
     insert_query = """ insert into smoothies.public.orders(INGREDIENTS,
 	NAME_ON_ORDER) values('"""+str+"""','"""+name_on_order+"""')"""
