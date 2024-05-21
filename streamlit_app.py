@@ -27,6 +27,7 @@ if data:
         st.subheader(i + ' Nutrition Information')
         fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + i)
         st.dataframe(data=fruityvice_response.json(), use_container_width=True)
+        s.stop()
     st.write(str)
     insert_query = f"""
     INSERT INTO smoothies.public.orders (INGREDIENTS, NAME_ON_ORDER) 
