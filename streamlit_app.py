@@ -3,9 +3,8 @@ import streamlit as st
 from snowflake.snowpark.functions import col
 import requests
 
-
+# Write directly to the app
 st.title("Example Streamlit App :balloon:")
-
 
 name_on_order = st.text_input("Movie title")
 st.write("The current movie title is", name_on_order)
@@ -14,23 +13,28 @@ st.write("The current movie title is", name_on_order)
 cns = st.connection("snowflake")
 session = cns.session()
 
-my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'))
+# Fetch fruit options from Snowflake
+my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME')).collect()
 
-
-data = st.multiselect('data',my_dataframe,max_selections=5)
-
+# Create a multiselect widget for fruit options
+data = st.multiselect('data', [row['FRUIT_NAME'] for row in my_dataframe], max_selections=5)
 st.write(data)
-if(data):
-    str = ''
+
+if data:
+    str = ' '.join(data)
     for i in data:
-    	str+=i+' '
-        st.subheader(i + 'Nutrition Information')
-	fruityvice_response = requests.get("https://fruityvice.com/api/fruit/"+i)
-	fv_df = st.dataframe(data=fruityvice_response.json(),use_container_width=True)
-    # st.text(fruityvice_response.json())
+        st.subheader(i + ' Nutrition Information')
+        fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + i)
+        if fruityvice_response.status_code == 200:
+            fv_data = fruityvice_response.json()
+            st.dataframe(data=fv_data, use_container_width=True)
+        else:
+            st.write("Error fetching data for " + i)
     st.write(str)
-    insert_query = """ insert into smoothies.public.orders(INGREDIENTS,
-	NAME_ON_ORDER) values('"""+str+"""','"""+name_on_order+"""')"""
+    insert_query = f"""
+    INSERT INTO smoothies.public.orders (INGREDIENTS, NAME_ON_ORDER) 
+    VALUES ('{str}', '{name_on_order}')
+    """
     st.write(insert_query)
     session.sql(insert_query).collect()
-    st.success('Your Smoothie is ordered! '+name_on_order, icon="✅")
+    st.success('Your Smoothie is ordered! ' + name_on_order, icon="✅")
