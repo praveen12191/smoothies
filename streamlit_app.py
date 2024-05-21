@@ -24,8 +24,8 @@ if(data):
     str = ''
     for i in data:
         str+=i+' '
-    	fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
-    	fv_df = st.dataframe(data=fruityvice_response.json(),use_container_width=True)
+	    fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
+	    fv_df = st.dataframe(data=fruityvice_response.json(),use_container_width=True)
     st.write(str)
     insert_query = """ insert into smoothies.public.orders(INGREDIENTS,
 	NAME_ON_ORDER) values('"""+str+"""','"""+name_on_order+"""')"""
